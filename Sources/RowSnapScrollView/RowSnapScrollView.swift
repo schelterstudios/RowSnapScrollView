@@ -99,3 +99,68 @@ private struct RowSnapScrollTargetBehavior<
         }
     }
 }
+
+#if DEBUG
+private struct RowSnapScrollViewPreviewer: View {
+    
+    struct Message: Equatable, Identifiable {
+        enum MessageType {
+            case sent, received
+        }
+        let id = UUID()
+        let type: MessageType
+        let text: String
+    }
+    
+    let data: [Message] = [
+        .init(type: .received, text: "Hello, How may I help you today?"),
+        .init(type: .received, text: "..."),
+        .init(type: .received, text: "Hello, World?"),
+        .init(type: .sent, text: "Yes, hi, I am trying to test a snapping row scroll view."),
+        .init(type: .sent, text: "It needs to snap to the top-most visible row, and support variable row heights."),
+        .init(type: .received, text: "Well you're in luck! This component does just that!"),
+        .init(type: .received, text: "Additionally, snappedItem is a binding that allows you to programmatically scroll your view to the top of the specified item."),
+        .init(type: .sent, text: "Oh nice! 👍"),
+    ]
+    
+    @State private var snappedItem: Message?
+    
+    var body: some View {
+        RowSnapScrollView(
+            data, snappedItem: $snappedItem
+        ) { item in
+            let size = item.text.boundingRect(
+                with: .init(width: 330.0 - (16*2), height: .greatestFiniteMagnitude),
+                options: .usesLineFragmentOrigin,
+                attributes: [.font: UIFont.preferredFont(forTextStyle: .title1)],
+                context: nil
+            )
+            return size.height + (16*2)
+            
+        } content: { item in
+            HStack(spacing:0) {
+                if item.type == .sent { Spacer() }
+                
+                Text(item.text)
+                    .font(.title)
+                    .padding(16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.black, lineWidth: item == snappedItem ? 4 : 0)
+                            .fill(item.type == .sent ? Color.cyan : Color.yellow)
+                    )
+                    .onTapGesture{
+                        snappedItem = item
+                    }
+                
+                if item.type == .received { Spacer() }
+            }
+            .frame(width: 330)
+        }
+    }
+}
+
+#Preview {
+    RowSnapScrollViewPreviewer()
+}
+#endif

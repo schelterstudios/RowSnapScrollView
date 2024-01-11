@@ -38,9 +38,3 @@ dependencies: [
     .package(name: "RowSnapScrollView", url: "https://github.com/schelterstudios/RowSnapScrollView", from: Version(1, 0, 2)),
 ],
 ```
-
-## License
-
-© 2014-2023 1024jp
-
-GzipSwift is distributed under the terms of the __MIT License__. See [LICENSE](LICENSE) for details.
